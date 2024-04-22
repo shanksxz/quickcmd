@@ -1,0 +1,37 @@
+{
+  "name": "quickcmd",
+  "author": {
+    "name" : "Somya Bhatt",
+    "username" : "@shanksxz",
+    "email": "somyacu1@gmail.com",
+    "url": "https://github.com/shanksxz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shanksxz/quickcmd"
+  },
+  "version": "0.1.1",
+  "description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
+  "bin": {
+    "qk": "./bin/index.js"
+  },
+  "keywords": [
+    "cli",
+    "command-line",
+    "commands",
+    "management",
+    "productivity",
+    "workflow",
+    "terminal",
+    "developer",
+    "sysadmin"
+  ],
+  "dependencies": {
+    "enquirer": "^2.4.1",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/yargs": "^17.0.32"
+  }
+}
