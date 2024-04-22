@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/shanksxz/quickcmd"
   },
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
   "bin": {
     "qk": "./bin/index.js"
