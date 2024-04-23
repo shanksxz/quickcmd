@@ -17,13 +17,18 @@ async function main() {
   const argv = yargs(hideBin(process.argv))
     .options({
       a: { type: "boolean", alias: "add", description: "Add a new command" },
-      c: { type : "boolean", alias: "directory", description : "create the directory to store the data"},
+      c: {
+        type: "boolean",
+        alias: "directory",
+        description: "create the directory to store the data",
+      },
       g: { type: "boolean", alias: "get", description: "Get saved commands" },
       e: {
         type: "boolean",
         alias: "edit",
         description: "Edit an existing command",
       },
+      p: { type: "boolean", alias: "path", description: "Get path" },
     })
     .parseSync();
 
@@ -32,7 +37,7 @@ async function main() {
       const { title: addTitle, command } = await promptAddCommand();
       addCommands(addTitle, command);
       break;
-    case argv.c :
+    case argv.c:
       createDir(defaultDirPath);
       break;
     case argv.g:
@@ -48,6 +53,9 @@ async function main() {
       if (index !== undefined) {
         editCommand(editTitle, index, newCommand);
       }
+      break;
+    case argv.p:
+      console.log(`${defaultDirPath}`);
       break;
     default:
       console.error(
