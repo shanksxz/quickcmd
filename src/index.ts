@@ -8,6 +8,7 @@ import {
   createDir,
   editCommand,
   editCommandPrompt,
+  executeCommand,
   getCommands,
 } from "./utils/commands";
 import { promptAddCommand } from "./utils/prompt";
@@ -29,6 +30,7 @@ async function main() {
         description: "Edit an existing command",
       },
       p: { type: "boolean", alias: "path", description: "Get path" },
+      x: { type: "string", alias: "execute", description: "execute an command from the list"}
     })
     .parseSync();
 
@@ -56,6 +58,9 @@ async function main() {
       break;
     case argv.p:
       console.log(`${defaultDirPath}`);
+      break;
+    case argv.x !== '' :
+      executeCommand(argv.x as string)
       break;
     default:
       console.error(

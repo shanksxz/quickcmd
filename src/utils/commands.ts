@@ -1,7 +1,9 @@
-import fs from "fs";
+import fs, { read } from "fs";
 import { defaultDataPath, defaultDirPath } from "./path";
 import { CommandData } from "./types";
 import { prompt } from "enquirer";
+import { command } from "yargs";
+import { exec, execSync } from "child_process";
 
 export function createDir(dirPath: string) {
   try {
@@ -11,6 +13,16 @@ export function createDir(dirPath: string) {
     }
   } catch (error) {
     console.error(`Error creating directory: ${error}`);
+  }
+}
+
+export function readFile() {
+  try {
+    const fileContent = fs.readFileSync(defaultDataPath, "utf-8");
+    const data: CommandData[] = JSON.parse(fileContent);
+    return data;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -47,9 +59,8 @@ export function addCommands(title: string, command: string) {
 
 export function getCommands(title: string) {
   try {
-    const fileContent = fs.readFileSync(defaultDataPath, "utf-8");
-    const data: CommandData[] = JSON.parse(fileContent);
-    const commands = data.find((item) => item.title === title)?.commands || [];
+    const data = readFile();
+    const commands = data?.find((item) => item.title === title)?.commands || [];
 
     console.log(`Commands for "${title}":`);
     commands.forEach((command) => console.log(command));
@@ -97,9 +108,8 @@ export async function editCommandPrompt() {
   });
 
   try {
-    const fileContent = fs.readFileSync(defaultDataPath, "utf-8");
-    const data: CommandData[] = JSON.parse(fileContent);
-    const commandData = data.find((item) => item.title === title);
+    const data = readFile();
+    const commandData = data?.find((item) => item.title === title);
 
     if (!commandData) {
       console.log(`No commands found with title "${title}"`);
@@ -129,5 +139,33 @@ export async function editCommandPrompt() {
   } catch (error) {
     console.error(`Error editing command: ${error}`);
     return { title };
+  }
+}
+
+export async function executeCommand(title: string) {
+  try {
+    const data = readFile();
+    const commandData = data?.find((e) => e.title === title);
+
+    if (!commandData) {
+      console.log(`No command found with title "${title}"`);
+      return;
+    }
+
+    const choices = commandData.commands.map((c, i) => ({
+      name: c,
+    }));
+
+    const { commandIndex } = await prompt<{ commandIndex: string }>({
+      type: "select",
+      name: "commandIndex",
+      message: "",
+      choices,
+    });
+
+    const stdout = execSync(commandIndex);
+    console.log(stdout.toString());
+  } catch (error) {
+    console.log("Error", error);
   }
 }
