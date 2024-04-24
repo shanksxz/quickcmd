@@ -18,6 +18,7 @@ After installation, run qk -c to create the necessary directory for storing your
 
 ```bash
 qk -c
+qk --help  # check for available commands
 ```
 
 ### Saving a Command
@@ -41,10 +42,22 @@ qk -g
 
 ### Updating a Command
 
-To update a command, use the `-u` or `--update` option
+To update a command, use the `-e` or `--edit` option
 
 ```bash
 qk -e
+```
+### Execute a Command
+You can directly execute command for an particular "title" you saved
+
+```bash
+qk -e <title>
+
+ex:-
+
+❯ qk -x npm
+√ command · npm -v
+10.5.0
 ```
 
 ### Data Storage
