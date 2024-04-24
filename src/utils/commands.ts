@@ -156,14 +156,14 @@ export async function executeCommand(title: string) {
       name: c,
     }));
 
-    const { commandIndex } = await prompt<{ commandIndex: string }>({
+    const { command } = await prompt<{ command: string }>({
       type: "select",
-      name: "commandIndex",
+      name: "command",
       message: "",
       choices,
     });
 
-    const stdout = execSync(commandIndex);
+    const stdout = execSync(command);
     console.log(stdout.toString());
   } catch (error) {
     console.log("Error", error);
