@@ -100,13 +100,7 @@ export function editCommand(
   }
 }
 
-export async function editCommandPrompt() {
-  const { title } = await prompt<{ title: string }>({
-    type: "input",
-    name: "title",
-    message: "What is the title of the command you want to edit?",
-  });
-
+export async function editCommandPrompt(title : string) {
   try {
     const data = readFile();
     const commandData = data?.find((item) => item.title === title);
@@ -135,7 +129,7 @@ export async function editCommandPrompt() {
     });
 
     const index = parseInt(commandIndex.split(" ")[0]);
-    return { title, index, newCommand };
+    return {index, newCommand };
   } catch (error) {
     console.error(`Error editing command: ${error}`);
     return { title };

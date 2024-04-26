@@ -1,31 +1,28 @@
 #!/usr/bin/env node
 
-import yargs, { alias, describe } from "yargs";
+import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { prompt } from "enquirer";
 import {
   addCommands,
-  createDir,
   editCommand,
   editCommandPrompt,
   executeCommand,
   getCommands,
 } from "./utils/commands";
-import { promptAddCommand } from "./utils/prompt";
 import { defaultDirPath } from "./utils/path";
 
 async function main() {
   const argv = yargs(hideBin(process.argv))
     .options({
-      a: { type: "boolean", alias: "add", description: "Add a new command" },
+      a: { type: "string", alias: "add", description: "Add a new command" },
       c: {
-        type: "boolean",
-        alias: "directory",
+        type: "string",
+        alias: "command",
         description: "create the directory to store the data",
       },
-      g: { type: "boolean", alias: "get", description: "Get saved commands" },
+      g: { type: "string", alias: "get", description: "Get saved commands" },
       e: {
-        type: "boolean",
+        type: "string",
         alias: "edit",
         description: "Edit an existing command",
       },
@@ -34,39 +31,19 @@ async function main() {
     })
     .parseSync();
 
-  switch (true) {
-    case argv.a:
-      const { title: addTitle, command } = await promptAddCommand();
-      addCommands(addTitle, command);
-      break;
-    case argv.c:
-      createDir(defaultDirPath);
-      break;
-    case argv.g:
-      const { title: getTitle } = await prompt<{ title: string }>({
-        type: "input",
-        name: "title",
-        message: "Whose commands you want to see?",
-      });
-      getCommands(getTitle);
-      break;
-    case argv.e:
-      const { title: editTitle, index, newCommand } = await editCommandPrompt();
-      if (index !== undefined) {
-        editCommand(editTitle, index, newCommand);
-      }
-      break;
-    case argv.p:
-      console.log(`${defaultDirPath}`);
-      break;
-    case argv.x !== '' :
-      executeCommand(argv.x as string)
-      break;
-    default:
-      console.error(
-        "Invalid command. Please use --help for available commands."
-      );
-      break;
+  if(argv.a && argv.c) {
+    addCommands(argv.a, argv.c)
+  } else if(argv.g) {
+    getCommands(argv.g)
+  } else if(argv.e) {
+    const { index, newCommand } = await editCommandPrompt(argv.e)
+    if (index !== undefined) {
+      editCommand(argv.e, index, newCommand)
+    }
+  } else if(argv.p) {
+    console.log(`${defaultDirPath}`)
+  } else if(argv.x) {
+    executeCommand(argv.x)
   }
 }
 
