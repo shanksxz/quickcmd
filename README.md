@@ -14,7 +14,7 @@ npm install -g quickcmd
 
 ### Setup
 
-After installation, run qk -c to create the necessary directory for storing your commands. This step only needs to be done once, after the initial installation.
+After installation, use `-d` to create the necessary directory for storing your commands. This step only needs to be done once, after the initial installation.
 
 ```bash
 qk -d
