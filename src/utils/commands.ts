@@ -75,9 +75,8 @@ export function editCommand(
   newCommand: string
 ) {
   try {
-    const fileContent = fs.readFileSync(defaultDataPath, "utf-8");
-    const data: CommandData[] = JSON.parse(fileContent);
-    const commandData = data.find((item) => item.title === title);
+    const data = readFile();
+    const commandData = data?.find((item) => item.title === title);
 
     if (!commandData) {
       console.log(`No commands found with title "${title}"`);
@@ -146,7 +145,7 @@ export async function executeCommand(title: string) {
       return;
     }
 
-    const choices = commandData.commands.map((c, i) => ({
+    const choices = commandData.commands.map((c, _) => ({
       name: c,
     }));
 
@@ -157,6 +156,7 @@ export async function executeCommand(title: string) {
       choices,
     });
 
+    //? idk if there is an better way to do this
     const stdout = execSync(command);
     console.log(stdout.toString());
   } catch (error) {
