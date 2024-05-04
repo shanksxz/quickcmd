@@ -17,19 +17,18 @@ npm install -g quickcmd
 After installation, run qk -c to create the necessary directory for storing your commands. This step only needs to be done once, after the initial installation.
 
 ```bash
-qk -c
-qk --help  # check for available commands
+qk -d
 ```
 
 ### Saving a Command
 
-To save a command, use the `-a` or `--add` option, this will prompt you to enter the title and command you want to add. Once entered, the command will be saved successfully.
+To save a command, use the `-t` or `--title` option with `-c` or `--command`. Once entered, the command will be saved successfully.
 
 ```bash
-❯ qk -a
-√ What title you want to give? · prisma
-√ Enter command you want to add · npx prisma init
-Command saved successfully
+❯ qk -t <title> -c <command>
+
+ex:-
+qk -t "docker" -c "docker ps"
 ```
 
 ### Retrieving Commands
@@ -37,7 +36,10 @@ Command saved successfully
 To retrieve commands, use the `-g` or `--get` option
 
 ```bash
-qk -g
+qk -g <title>
+
+ex:-
+qk -g docker
 ```
 
 ### Updating a Command
@@ -45,8 +47,23 @@ qk -g
 To update a command, use the `-e` or `--edit` option
 
 ```bash
-qk -e
+qk -e <title>
+
+ex:-
+qk -e docker
+
 ```
+### Removing a Command
+
+To remove a command, use the `-r` or `--remove` option
+
+```bash
+qk -r <title>
+
+ex:-
+qk -r docker
+```
+
 ### Execute a Command
 You can directly execute command for an particular "title" you saved
 
@@ -58,6 +75,22 @@ ex:-
 ❯ qk -x npm
 √ command · npm -v
 10.5.0
+```
+### Summary
+
+```bash
+Usage: qk [options]
+
+Options:
+  --version          output the version number
+  -c, --cmd      Save a command
+  -t, --title        Title of the command
+  -g, --get          Get a command
+  -e, --edit         Edit a command
+  -r, --remove       Remove a command
+  -d, --dir          Create a directory for storing commands
+  -x, --execute      Execute a command
+  -h, --help         display help for command
 ```
 
 ### Data Storage
