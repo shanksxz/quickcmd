@@ -18,7 +18,7 @@ async function main() {
       c: {
         type: "string",
         alias: "command",
-        description: "create the directory to store the data",
+        description: "for command, must use with -a",
       },
       g: { type: "string", alias: "get", description: "Get saved commands" },
       e: {
