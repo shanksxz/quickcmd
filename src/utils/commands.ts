@@ -99,7 +99,7 @@ export function editCommand(
   }
 }
 
-export async function editCommandPrompt(title : string) {
+export async function editCommandPrompt(title: string) {
   try {
     const data = readFile();
     const commandData = data?.find((item) => item.title === title);
@@ -128,7 +128,7 @@ export async function editCommandPrompt(title : string) {
     });
 
     const index = parseInt(commandIndex.split(" ")[0]);
-    return {index, newCommand };
+    return { index, newCommand };
   } catch (error) {
     console.error(`Error editing command: ${error}`);
     return { title };
@@ -159,6 +159,43 @@ export async function executeCommand(title: string) {
     //? idk if there is an better way to do this
     const stdout = execSync(command);
     console.log(stdout.toString());
+  } catch (error) {
+    console.log("Error", error);
+  }
+}
+
+export async function removeCommand(title: string) {
+  try {
+    const data = readFile();
+    const commandData = data?.find((e) => e.title === title);
+
+    if (!commandData) {
+      console.log(`No command found with title "${title}"`);
+      return;
+    }
+
+    const choices = commandData.commands.map((c, _) => ({
+      name: c,
+    }));
+
+    const { command } = await prompt<{ command: string }>({
+      type: "select",
+      name: "command",
+      message: "",
+      choices,
+    });
+
+    const newCommands = commandData.commands.filter((c) => c !== command);
+
+    if (newCommands.length === 0) {
+      const newData = data?.filter((e) => e.title !== title);
+      fs.writeFileSync(defaultDataPath, JSON.stringify(newData));
+    } else {
+      commandData.commands = newCommands;
+      fs.writeFileSync(defaultDataPath, JSON.stringify(data));
+    }
+
+    console.log("Command removed successfully");
   } catch (error) {
     console.log("Error", error);
   }
