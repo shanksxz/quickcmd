@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import yargs, { alias } from "yargs";
+import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import {
   addCommands,
@@ -12,6 +12,12 @@ import {
   removeCommand,
 } from "./utils/commands";
 import { defaultDirPath } from "./utils/path";
+
+function is(
+  arg: string | boolean | number | string[] | undefined
+): arg is string {
+  return typeof arg === "string";
+}
 
 async function main() {
   const argv = yargs(hideBin(process.argv))
@@ -51,23 +57,33 @@ async function main() {
     })
     .parseSync();
 
-  if (argv.t && argv.c) {
-    addCommands(argv.t, argv.c);
-  } else if (argv.d) {
-    createDir(defaultDirPath);
-  } else if (argv.g) {
-    getCommands(argv.g);
-  } else if (argv.r) {
-    removeCommand(argv.r);
-  } else if (argv.e) {
-    const { index, newCommand } = await editCommandPrompt(argv.e);
-    if (index !== undefined) {
-      editCommand(argv.e, index, newCommand);
-    }
-  } else if (argv.p) {
-    console.log(`${defaultDirPath}`);
-  } else if (argv.x) {
-    executeCommand(argv.x);
+  switch (true) {
+    case is(argv.t) && is(argv.c):
+      addCommands(argv.t, argv.c);
+      break;
+    case argv.d:
+      createDir(defaultDirPath);
+      break;
+    case is(argv.g):
+      getCommands(argv.g);
+      break;
+    case is(argv.r):
+      removeCommand(argv.r);
+      break;
+    case is(argv.e):
+      const { index, newCommand } = await editCommandPrompt(argv.e);
+      if (index !== undefined) {
+        editCommand(argv.e, index, newCommand);
+      }
+      break;
+    case argv.p:
+      console.log(`${defaultDirPath}`);
+      break;
+    case is(argv.x):
+      executeCommand(argv.x);
+      break;
+    default:
+      yargs.showHelp();
   }
 }
 
