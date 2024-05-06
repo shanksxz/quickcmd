@@ -1,9 +1,8 @@
-import fs, { read } from "fs";
-import { defaultDataPath, defaultDirPath } from "./path";
+import fs from "fs";
+import { defaultDataPath } from "./path";
 import { CommandData } from "./types";
 import { prompt } from "enquirer";
-import { command } from "yargs";
-import { exec, execSync } from "child_process";
+import { execSync } from "child_process";
 
 export function createDir(dirPath: string) {
   try {
