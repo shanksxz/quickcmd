@@ -45,7 +45,6 @@ qk -g docker
 ### Updating a Command
 
 To update a command, use the `-e` or `--edit` option
-> Note: This is under testing, might not work as expected
 
 ```bash
 qk -e <title>
@@ -67,9 +66,10 @@ qk -r docker
 
 ### Execute a Command
 You can directly execute command for an particular "title" you saved
+> Note: This is under testing, might not work as expected
 
 ```bash
-qk -e <title>
+qk -x <title>
 
 ex:-
 
