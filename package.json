@@ -1,5 +1,7 @@
 {
   "name": "quickcmd",
+  "description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
+  "license": "MIT",
   "author": {
     "name": "Somya Bhatt",
     "username": "@shanksxz",
@@ -11,7 +13,6 @@
     "url": "https://github.com/shanksxz/quickcmd"
   },
   "version": "1.0.3",
-  "description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
   "bin": {
     "qk": "./bin/index.js"
   },
