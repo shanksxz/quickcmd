@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/shanksxz/quickcmd"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "bin": {
     "qk": "./bin/index.js"
   },
