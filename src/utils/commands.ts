@@ -25,6 +25,19 @@ export function readFile() {
   }
 }
 
+function copyToClipboard(text: string) {
+  try {
+    const powershellCommand = `Set-Clipboard -Value '${text.replace(
+      /'/g,
+      "''"
+    )}'`;
+    execSync(`powershell.exe -Command "${powershellCommand}"`);
+    console.log("Copied to clipboard");
+  } catch (error) {
+    console.error(`Error copying to clipboard: ${error}`);
+  }
+}
+
 export function addCommands(title: string, command: string) {
   try {
     if (title.length == 0 && command.length == 0) {
@@ -56,13 +69,29 @@ export function addCommands(title: string, command: string) {
   }
 }
 
-export function getCommands(title: string) {
+export async function getCommands(title: string) {
   try {
     const data = readFile();
     const commands = data?.find((item) => item.title === title)?.commands || [];
+ 
+    if (process.platform === "win32") {
+      const choices = commands.map((command, _) => ({
+        name: command,
+      }));
 
-    console.log(`Commands for "${title}":`);
-    commands.forEach((command) => console.log(command));
+      const { command } = await prompt<{ command: string }>({
+        type: "select",
+        name: "command",
+        message: "Select the command you want to copy",
+        choices,
+      });
+
+      copyToClipboard(command);
+    } else {
+      console.log(`Commands for "${title}":`);
+      commands.forEach((command) => console.log(command));
+    }
+
   } catch (error) {
     console.error(`Error retrieving commands: ${error}`);
   }
