@@ -8,6 +8,7 @@ import {
   editCommand,
   editCommandPrompt,
   executeCommand,
+  getAvailableCommands,
   getCommands,
   removeCommand,
 } from "./utils/commands";
@@ -22,6 +23,11 @@ function is(
 async function main() {
   const argv = yargs(hideBin(process.argv))
     .options({
+      a: {
+        type: "boolean",
+        alias: "all",
+        description: "all the available commands titles",
+      },
       t: {
         type: "string",
         alias: "title",
@@ -58,6 +64,9 @@ async function main() {
     .parseSync();
 
   switch (true) {
+    case argv.a:
+      getAvailableCommands();
+      break;
     case is(argv.t) && is(argv.c):
       addCommands(argv.t, argv.c);
       break;

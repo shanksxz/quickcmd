@@ -69,6 +69,17 @@ export function addCommands(title: string, command: string) {
   }
 }
 
+export function getAvailableCommands() {
+  try {
+    const data = readFile();
+    const titles = data?.map((item) => item.title) || [];
+    console.log("Available commands titles:");
+    titles.forEach((title) => console.log(title));
+  } catch (error) {
+    console.error(`Error retrieving available commands: ${error}`);
+  }
+}
+
 export async function getCommands(title: string) {
   try {
     const data = readFile();
