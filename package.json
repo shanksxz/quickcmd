@@ -14,7 +14,7 @@
 		"type": "git",
 		"url": "git+https://github.com/shanksxz/quickcmd.git"
 	},
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
