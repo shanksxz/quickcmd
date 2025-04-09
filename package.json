@@ -1,6 +1,8 @@
 {
   "name": "quickcmd",
   "description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
+  "type": "module",
+  "main": "bin/index.js",
   "license": "MIT",
   "author": {
     "name": "Somya Bhatt",
@@ -13,8 +15,13 @@
     "url": "https://github.com/shanksxz/quickcmd"
   },
   "version": "1.0.5",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node bin/index.js"
+  },
   "bin": {
-    "qk": "./bin/index.js"
+    "qk": "./bin/index.mjs"
   },
   "keywords": [
     "cli",
@@ -28,11 +35,14 @@
     "sysadmin"
   ],
   "dependencies": {
-    "enquirer": "^2.4.1",
-    "yargs": "^17.7.2"
+    "@clack/prompts": "^0.10.1",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
-    "@types/yargs": "^17.0.32"
+    "@types/yargs": "^17.0.32",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
   }
 }

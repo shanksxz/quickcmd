@@ -1,99 +1,101 @@
-#!/usr/bin/env node
-
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
+import { Command } from "commander";
+import chalk from 'chalk';
 import {
-  addCommands,
-  createDir,
-  editCommand,
-  editCommandPrompt,
-  executeCommand,
-  getAvailableCommands,
-  getCommands,
-  removeCommand,
-} from "./utils/commands";
-import { defaultDirPath } from "./utils/path";
+    addCommands,
+    editCommand,
+    editCommandPrompt,
+    getAvailableCommands,
+    getCommands,
+    removeCommand,
+} from "./helper";
+import { defaultDirPath, createDir } from "./utils";
 
-function is(
-  arg: string | boolean | number | string[] | undefined
-): arg is string {
-  return typeof arg === "string";
+function isValidString(value: unknown): value is string {
+    return typeof value === "string" && value.length > 0;
 }
 
 async function main() {
-  const argv = yargs(hideBin(process.argv))
-    .options({
-      a: {
-        type: "boolean",
-        alias: "all",
-        description: "all the available commands titles",
-      },
-      t: {
-        type: "string",
-        alias: "title",
-        description: "title for the command",
-      },
-      c: {
-        type: "string",
-        alias: "cmd",
-        description: "command to be saved, must be used with -t flag",
-      },
-      d: {
-        type: "boolean",
-        alias: "dir",
-        description: "Create a directory for storing the commands",
-      },
-      r: {
-        type: "string",
-        alias: "remove",
-        description: "remove a command",
-      },
-      g: { type: "string", alias: "get", description: "Get saved commands" },
-      e: {
-        type: "string",
-        alias: "edit",
-        description: "Edit an existing command",
-      },
-      p: { type: "boolean", alias: "path", description: "Get path" },
-      x: {
-        type: "string",
-        alias: "execute",
-        description: "execute an command from the list",
-      },
-    })
-    .parseSync();
+    const program = new Command();
 
-  switch (true) {
-    case argv.a:
-      getAvailableCommands();
-      break;
-    case is(argv.t) && is(argv.c):
-      addCommands(argv.t, argv.c);
-      break;
-    case argv.d:
-      createDir(defaultDirPath);
-      break;
-    case is(argv.g):
-      getCommands(argv.g);
-      break;
-    case is(argv.r):
-      removeCommand(argv.r);
-      break;
-    case is(argv.e):
-      const { index, newCommand } = await editCommandPrompt(argv.e);
-      if (index !== undefined) {
-        editCommand(argv.e, index, newCommand);
-      }
-      break;
-    case argv.p:
-      console.log(`${defaultDirPath}`);
-      break;
-    case is(argv.x):
-      executeCommand(argv.x);
-      break;
-    default:
-      yargs.showHelp();
-  }
+    program
+        .name(chalk.bold("qk"))
+        .description(
+            chalk.cyan("quickcmd is a CLI tool for managing and accessing frequently used commands easily")
+        )
+        .version(chalk.green("1.0.5"));
+
+    program
+        .option("-a, --all", chalk.yellow("List all available command titles"))
+        .option("-t, --title <title>", chalk.yellow("Title for the command group"))
+        .option("-c, --cmd <command>", chalk.yellow("Command to save (use with -t)"))
+        .option("-d, --dir", chalk.yellow("Initialize storage directory"))
+        .option("-r, --remove <title>", chalk.yellow("Remove a command by title"))
+        .option("-g, --get <title>", chalk.yellow("Get commands by title"))
+        .option("-e, --edit <title>", chalk.yellow("Edit existing command"))
+        .option("-p, --path", chalk.yellow("Show path to commands storage"));
+        //TODO: implement search, export, import
+        // .option("-s, --search <keyword>", chalk.yellow("Search commands by keyword"))
+        // .option("--export <filePath>", chalk.yellow("Export commands to file"))
+        // .option("--import <filePath>", chalk.yellow("Import commands from file"));
+
+    program.addHelpText(
+        "after",
+        `
+${chalk.blue.bold("Examples:")}
+  ${chalk.green("$ qk -t \"git\" -c \"git status\"")}    ${chalk.dim("Save a new git command")}
+  ${chalk.green("$ qk -g \"git\"")}                    ${chalk.dim("List all git commands")}
+
+${chalk.dim("For more information visit")} ${chalk.cyan("https://github.com/shanksxz/quickcmd")}`
+    );
+
+    program.parse();
+    const options = program.opts();
+
+    switch (true) {
+        case options.all:
+            getAvailableCommands();
+            break;
+
+        case options.title && options.cmd:
+            addCommands(options.title, options.cmd);
+            break;
+
+        case options.dir:
+            createDir(defaultDirPath);
+            break;
+
+        case isValidString(options.get):
+            getCommands(options.get);
+            break;
+
+        case isValidString(options.remove):
+            removeCommand(options.remove);
+            break;
+
+        case isValidString(options.edit):
+            const result = await editCommandPrompt(options.edit);
+            if (result?.index !== undefined) {
+                editCommand(options.edit, result?.index, result?.newCommand);
+            }
+            break;
+
+        case options.path:
+            console.log(chalk.blue(`Commands stored at: ${chalk.bold(defaultDirPath)}`));
+            break;
+        
+        // Commented out until implementation is available
+        // case isValidString(options.search):
+        //     searchCommands(options.search);
+        //     break;
+
+        // case isValidString(options.export):
+        //     exportCommands(options.export);
+        //     break;
+
+        // case isValidString(options.import):
+        //     importCommands(options.import);
+        //     break;
+    }
 }
 
 main();
