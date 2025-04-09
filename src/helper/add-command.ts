@@ -1,11 +1,11 @@
-import fs from "fs";
+import fs from "node:fs";
 import chalk from "chalk";
 import { defaultDataPath } from "../utils";
-import { CommandData } from "../types";
+import type { CommandData } from "../types";
 
 export function addCommands(title: string, command: string) {
   try {
-    if (title.length == 0 && command.length == 0) {
+    if (title.length === 0 && command.length === 0) {
       console.log(chalk.yellow("Fields cannot be empty"));
       return;
     }
