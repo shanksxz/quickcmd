@@ -24,7 +24,7 @@
     "prepare": "husky"
   },
   "bin": {
-    "qk": "./bin/index.mjs"
+    "qk": "./bin/index.js"
   },
   "keywords": [
     "cli",
