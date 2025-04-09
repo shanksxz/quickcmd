@@ -1,53 +1,53 @@
 {
-  "name": "quickcmd",
-  "description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
-  "type": "module",
-  "main": "bin/index.js",
-  "license": "MIT",
-  "author": {
-    "name": "Somya Bhatt",
-    "username": "@shanksxz",
-    "email": "somyacu1@gmail.com",
-    "url": "https://github.com/shanksxz"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shanksxz/quickcmd"
-  },
-  "version": "1.0.5",
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "start": "node bin/index.js",
-    "format-and-lint": "biome check ./src",
-    "format-and-lint:fix": "biome check --write ./src",
-    "prepare": "husky"
-  },
-  "bin": {
-    "qk": "./bin/index.js"
-  },
-  "keywords": [
-    "cli",
-    "command-line",
-    "commands",
-    "management",
-    "productivity",
-    "workflow",
-    "terminal",
-    "developer",
-    "sysadmin"
-  ],
-  "dependencies": {
-    "@clack/prompts": "^0.10.1",
-    "chalk": "^5.4.1",
-    "commander": "^13.1.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/node": "^20.12.7",
-    "@types/yargs": "^17.0.32",
-    "husky": "^9.1.7",
-    "tsup": "^8.4.0",
-    "typescript": "^5.8.3"
-  }
+	"name": "quickcmd",
+	"description": "quickcmd is a CLI tool for managing and accessing frequently used commands easily.",
+	"type": "module",
+	"main": "bin/index.js",
+	"license": "MIT",
+	"author": {
+		"name": "Somya Bhatt",
+		"username": "@shanksxz",
+		"email": "somyacu1@gmail.com",
+		"url": "https://github.com/shanksxz"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/shanksxz/quickcmd.git"
+	},
+	"version": "1.0.5",
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"start": "node bin/index.js",
+		"format-and-lint": "biome check ./src",
+		"format-and-lint:fix": "biome check --write ./src",
+		"prepare": "husky"
+	},
+	"bin": {
+		"qk": "bin/index.js"
+	},
+	"keywords": [
+		"cli",
+		"command-line",
+		"commands",
+		"management",
+		"productivity",
+		"workflow",
+		"terminal",
+		"developer",
+		"sysadmin"
+	],
+	"dependencies": {
+		"@clack/prompts": "^0.10.1",
+		"chalk": "^5.4.1",
+		"commander": "^13.1.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/node": "^20.12.7",
+		"@types/yargs": "^17.0.32",
+		"husky": "^9.1.7",
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.3"
+	}
 }
