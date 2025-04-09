@@ -18,7 +18,10 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "start": "node bin/index.js"
+    "start": "node bin/index.js",
+    "format-and-lint": "biome check ./src",
+    "format-and-lint:fix": "biome check --write ./src",
+    "prepare": "husky"
   },
   "bin": {
     "qk": "./bin/index.mjs"
@@ -40,8 +43,10 @@
     "commander": "^13.1.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@types/node": "^20.12.7",
     "@types/yargs": "^17.0.32",
+    "husky": "^9.1.7",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3"
   }

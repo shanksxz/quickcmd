@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import fs from "fs";
+import fs from "node:fs";
 import * as p from "@clack/prompts";
 import { readFile } from "../utils";
 import { defaultDataPath } from "../utils";

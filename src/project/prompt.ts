@@ -21,7 +21,7 @@ export async function promptEditCommand(): Promise<{ title: string; index: numbe
     message: chalk.yellow('Enter the index of the command you want to edit'),
     placeholder: 'e.g. 1',
     validate: (value) => {
-      if (value && isNaN(Number(value))) return chalk.red('Index must be a number');
+      if (value && Number.isNaN(Number(value))) return chalk.red('Index must be a number');
     }
   });
   
@@ -30,7 +30,7 @@ export async function promptEditCommand(): Promise<{ title: string; index: numbe
     return { title: title as string, index: undefined, newCommand: '' };
   }
   
-  const index = indexInput ? parseInt(indexInput as string) : undefined;
+  const index = indexInput ? Number.parseInt(indexInput as string) : undefined;
   
   const newCommand = await p.text({
     message: chalk.yellow('Enter the new command'),

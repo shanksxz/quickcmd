@@ -1,8 +1,8 @@
-import fs from "fs";
+import fs from "node:fs";
 import chalk from "chalk";
-import { CommandData } from "../types";
-import os from "os";
-import path from "path";
+import type { CommandData } from "../types";
+import os from "node:os";
+import path from "node:path";
 
 export const folderName = "qk";
 export const localAppDataPath = process.env.LOCALAPPDATA || os.homedir();

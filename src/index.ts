@@ -72,12 +72,13 @@ ${chalk.dim("For more information visit")} ${chalk.cyan("https://github.com/shan
             removeCommand(options.remove);
             break;
 
-        case isValidString(options.edit):
+        case isValidString(options.edit): {
             const result = await editCommandPrompt(options.edit);
             if (result?.index !== undefined) {
                 editCommand(options.edit, result?.index, result?.newCommand);
             }
             break;
+        }
 
         case options.path:
             console.log(chalk.blue(`Commands stored at: ${chalk.bold(defaultDirPath)}`));
