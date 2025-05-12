@@ -55,13 +55,12 @@ ${chalk.dim("For more information visit")} ${chalk.cyan("https://github.com/shan
 
 	program.parse();
 	const options = program.opts();
-
 	switch (true) {
 		case options.all:
 			getAvailableCommands();
 			break;
 
-		case options.title && options.cmd:
+		case Boolean(options.title && options.cmd):
 			addCommands(options.title, options.cmd);
 			break;
 
