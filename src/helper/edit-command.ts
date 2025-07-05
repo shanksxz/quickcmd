@@ -14,9 +14,7 @@ export function editCommand(
 		const commandData = data?.find((item) => item.title === title);
 
 		if (!commandData) {
-			console.log(
-				chalk.yellow(`No commands found with title "${chalk.bold(title)}"`),
-			);
+			p.log.warn(`No commands found with title "${title}"`);
 			return;
 		}
 
@@ -24,15 +22,15 @@ export function editCommand(
 			commandIndex - 1 < 0 ||
 			commandIndex - 1 >= commandData.commands.length
 		) {
-			console.log(chalk.yellow("Invalid command index"));
+			p.log.warn("Invalid command index");
 			return;
 		}
 
 		commandData.commands[commandIndex - 1] = newCommand;
 		fs.writeFileSync(defaultDataPath, JSON.stringify(data));
-		console.log(chalk.green("Command edited successfully"));
+		p.log.success("Command edited successfully");
 	} catch (error) {
-		console.error(chalk.red(`Error editing command: ${error}`));
+		p.cancel(`An error occurred: ${(error as Error).message}`);
 	}
 }
 

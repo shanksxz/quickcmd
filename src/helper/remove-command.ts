@@ -12,57 +12,59 @@ export async function removeCommand(title: string) {
 		}
 
 		const data = readFile();
-		const commandData = data?.find((item) => item.title === title);
+		if (!data) {
+			console.log(chalk.red("Could not read command data."));
+			return;
+		}
 
-		if (!commandData) {
+		const commandIndex = data.findIndex((item) => item.title === title);
+
+		if (commandIndex === -1) {
 			console.log(
 				chalk.yellow(`No commands found with title "${chalk.bold(title)}"`),
 			);
 			return;
 		}
 
-		if (commandData.commands.length === 1) {
-			const confirmDelete = await p.confirm({
-				message: `This will delete the only command for "${title}". Do you want to proceed?`,
-			});
-
-			if (p.isCancel(confirmDelete) || !confirmDelete) {
-				p.cancel("Operation cancelled");
-				return;
-			}
-
-			const filteredData = data?.filter((item) => item.title !== title);
-			fs.writeFileSync(defaultDataPath, JSON.stringify(filteredData));
-			console.log(
-				chalk.green(
-					`Command with title "${chalk.bold(title)}" deleted successfully`,
-				),
-			);
-			return;
-		}
-
-		const choices = commandData.commands.map((command, index) => ({
-			label: command,
-			value: index,
-		}));
-
-		p.intro(`Removing command for "${title}"`);
-
-		const commandIndex = await p.select({
-			message: "Select the command you want to remove",
-			options: choices,
+		const commandData = data[commandIndex];
+		const commandsToRemove = await p.multiselect({
+			message: `Select commands to remove for "${title}". (Press space to select)`,
+			options: commandData.commands.map((cmd) => ({ label: cmd, value: cmd })),
+			required: false,
 		});
 
-		if (p.isCancel(commandIndex)) {
+		if (p.isCancel(commandsToRemove)) {
 			p.cancel("Operation cancelled");
 			return;
 		}
 
-		commandData.commands.splice(commandIndex as number, 1);
+		if (commandsToRemove.length === 0) {
+			console.log(chalk.yellow("No commands selected for removal."));
+			return;
+		}
+
+		if (commandsToRemove.length === commandData.commands.length) {
+			const confirmDelete = await p.confirm({
+				message: `You are about to delete the entire '${title}' group. Are you sure?`,
+			});
+
+			if (confirmDelete && !p.isCancel(confirmDelete)) {
+				data.splice(commandIndex, 1);
+				fs.writeFileSync(defaultDataPath, JSON.stringify(data));
+				p.outro(chalk.green(`Command group '${title}' removed successfully!`));
+			} else {
+				p.cancel("Operation cancelled");
+			}
+			return;
+		}
+
+		commandData.commands = commandData.commands.filter(
+			(cmd) => !commandsToRemove.includes(cmd),
+		);
 		fs.writeFileSync(defaultDataPath, JSON.stringify(data));
 
-		p.outro(chalk.green("Command removed successfully!"));
+		p.outro(chalk.green("Selected commands removed successfully!"));
 	} catch (error) {
-		console.error(chalk.red(`Error removing command: ${error}`));
+		p.cancel(chalk.red(`An error occurred: ${(error as Error).message}`));
 	}
 }
