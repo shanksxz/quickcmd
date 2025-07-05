@@ -1,26 +1,29 @@
+import * as p from "@clack/prompts";
 import chalk from "chalk";
 import { readFile } from "../utils";
 
-export async function getCommands(title: string) {
+export function getCommands(title: string) {
 	try {
-		if (title.length === 0) {
-			console.log(chalk.yellow("Title cannot be empty"));
-			return;
-		}
-
 		const data = readFile();
-		const commands = data?.find((item) => item.title === title)?.commands || [];
-
-		if (commands.length === 0) {
-			console.log(chalk.yellow(`No commands found for "${chalk.bold(title)}"`));
+		if (!data || data.length === 0) {
+			p.log.warn("No commands found. Add one with 'qk add'.");
 			return;
 		}
 
-		console.log(chalk.blue.bold(`Commands for "${chalk.bold(title)}":`));
-		commands.forEach((command, index) =>
-			console.log(chalk.cyan(`  ${index + 1}. ${command}`)),
-		);
+		const commandData = data.find((item) => item.title === title);
+
+		if (!commandData) {
+			p.log.warn(`No commands found with title "${chalk.bold(title)}".`);
+			console.log(chalk.dim(`Run 'qk list' to see available titles.`));
+			return;
+		}
+
+		p.intro(chalk.blue(`Commands for '${title}':`));
+		for (const command of commandData.commands) {
+			console.log(`  ${chalk.green("›")} ${command}`);
+		}
+		p.outro(chalk.green("Done."));
 	} catch (error) {
-		console.error(chalk.red(`Error retrieving commands: ${error}`));
+		p.cancel(chalk.red(`An error occurred: ${(error as Error).message}`));
 	}
 }

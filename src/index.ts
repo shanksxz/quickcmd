@@ -4,15 +4,15 @@ import {
 	addCommands,
 	editCommand,
 	editCommandPrompt,
+	exportCommands,
 	getAvailableCommands,
 	getCommands,
+	importCommands,
 	removeCommand,
+	runCommand,
+	searchCommands,
 } from "./helper";
 import { createDir, defaultDirPath } from "./utils";
-
-function isValidString(value: unknown): value is string {
-	return typeof value === "string" && value.length > 0;
-}
 
 async function main() {
 	const program = new Command();
@@ -24,85 +24,116 @@ async function main() {
 				"quickcmd is a CLI tool for managing and accessing frequently used commands easily",
 			),
 		)
-		.version(chalk.green("1.0.5"));
+		.version(chalk.green("1.0.8"));
 
 	program
-		.option("-a, --all", chalk.yellow("List all available command titles"))
-		.option("-t, --title <title>", chalk.yellow("Title for the command group"))
-		.option(
-			"-c, --cmd <command>",
-			chalk.yellow("Command to save (use with -t)"),
-		)
-		.option("-d, --dir", chalk.yellow("Initialize storage directory"))
-		.option("-r, --remove <title>", chalk.yellow("Remove a command by title"))
-		.option("-g, --get <title>", chalk.yellow("Get commands by title"))
-		.option("-e, --edit <title>", chalk.yellow("Edit existing command"))
-		.option("-p, --path", chalk.yellow("Show path to commands storage"));
-	//TODO: implement search, export, import
-	// .option("-s, --search <keyword>", chalk.yellow("Search commands by keyword"))
-	// .option("--export <filePath>", chalk.yellow("Export commands to file"))
-	// .option("--import <filePath>", chalk.yellow("Import commands from file"));
+		.command("add")
+		.description("Save a new command")
+		.requiredOption("-t, --title <title>", "Title for the command group")
+		.requiredOption("-c, --cmd <command>", "Command to save")
+		.action(({ title, cmd }) => {
+			addCommands(title, cmd);
+		});
+
+	program
+		.command("list")
+		.description("List all available command titles")
+		.action(getAvailableCommands);
+
+	program
+		.command("get")
+		.description("Get commands by title")
+		.argument("<title>", "Title of the command group to get")
+		.action(getCommands);
+
+	program
+		.command("run")
+		.description("Interactively run a command from a group")
+		.argument("<title>", "Title of the command group to run from")
+		.action(runCommand);
+
+	program
+		.command("remove")
+		.description("Remove a command by title")
+		.argument("<title>", "Title of the command group to remove from")
+		.action((title) => {
+			removeCommand(title);
+		});
+
+	program
+		.command("edit")
+		.description("Edit an existing command")
+		.argument("<title>", "Title of the command group to edit")
+		.action(async (title) => {
+			const result = await editCommandPrompt(title);
+			if (result?.index !== undefined && result?.newCommand) {
+				editCommand(title, result.index, result.newCommand);
+			}
+		});
+
+	program
+		.command("search")
+		.description("Search for commands by keyword")
+		.argument("<keyword>", "Keyword to search for")
+		.action(searchCommands);
+
+	program
+		.command("init")
+		.description("Initialize storage directory")
+		.action(() => {
+			createDir(defaultDirPath);
+		});
+
+	program
+		.command("path")
+		.description("Show path to commands storage")
+		.action(() => {
+			console.log(
+				chalk.blue(`Commands stored at: ${chalk.bold(defaultDirPath)}`),
+			);
+		});
+
+	program
+		.command("export")
+		.description("Export all commands to a JSON file")
+		.argument("<filepath>", "The file path to export to")
+		.action(exportCommands);
+
+	program
+		.command("import")
+		.description("Import commands from a JSON file")
+		.argument("<filepath>", "The file path to import from")
+		.action(importCommands);
 
 	program.addHelpText(
 		"after",
 		`
 ${chalk.blue.bold("Examples:")}
-  ${chalk.green('$ qk -t "git" -c "git status"')}    ${chalk.dim("Save a new git command")}
-  ${chalk.green('$ qk -g "git"')}                    ${chalk.dim("List all git commands")}
+  ${chalk.green('$ qk add -t "git" -c "git status"')}    ${chalk.dim(
+		"Save a new git command",
+	)}
+  ${chalk.green('$ qk get "git"')}                       ${chalk.dim(
+		"Display all git commands",
+	)}
+  ${chalk.green('$ qk run "git"')}                       ${chalk.dim(
+		"Interactively run a git command",
+	)}
+  ${chalk.green('$ qk search "status"')}                  ${chalk.dim(
+		"Search for commands containing 'status'",
+	)}
+  ${chalk.green('$ qk export "my-commands.json"')}         ${chalk.dim(
+		"Export all commands to a file",
+	)}
+  ${chalk.green('$ qk import "my-commands.json"')}         ${chalk.dim(
+		"Import commands from a file",
+	)}
 
-${chalk.dim("For more information visit")} ${chalk.cyan("https://github.com/shanksxz/quickcmd")}`,
+${chalk.dim("For more information visit")} ${chalk.cyan(
+			"https://github.com/shanksxz/quickcmd",
+		)}`,
 	);
 
-	program.parse();
-	const options = program.opts();
-	switch (true) {
-		case options.all:
-			getAvailableCommands();
-			break;
-
-		case Boolean(options.title && options.cmd):
-			addCommands(options.title, options.cmd);
-			break;
-
-		case options.dir:
-			createDir(defaultDirPath);
-			break;
-
-		case isValidString(options.get):
-			getCommands(options.get);
-			break;
-
-		case isValidString(options.remove):
-			removeCommand(options.remove);
-			break;
-
-		case isValidString(options.edit): {
-			const result = await editCommandPrompt(options.edit);
-			if (result?.index !== undefined) {
-				editCommand(options.edit, result?.index, result?.newCommand);
-			}
-			break;
-		}
-
-		case options.path:
-			console.log(
-				chalk.blue(`Commands stored at: ${chalk.bold(defaultDirPath)}`),
-			);
-			break;
-
-		// Commented out until implementation is available
-		// case isValidString(options.search):
-		//     searchCommands(options.search);
-		//     break;
-
-		// case isValidString(options.export):
-		//     exportCommands(options.export);
-		//     break;
-
-		// case isValidString(options.import):
-		//     importCommands(options.import);
-		//     break;
-	}
+	await program.parseAsync(process.argv);
 }
 
 main();

@@ -1,114 +1,131 @@
-# quickcmd
+# quickcmd ⚡
 
-quickcmd is a command-line interface (CLI) tool that allows you to save and manage frequently used commands locally. It provides a convenient way to store, retrieve, add, update, and delete commands, making it easier to access them whenever needed through your CLI only.
+quickcmd is a command-line interface (CLI) tool that helps you save and manage your frequently used shell commands. It provides a convenient way to store, retrieve, search, and execute commands, making your workflow faster and more efficient, all from your terminal.
 
 ## Installation
 
-To get started with quickcmd, simply run the following command to install it globally:
+To get started with `quickcmd`, install it globally using your preferred package manager:
 
 ```bash
+# Using npm
 npm install -g quickcmd
+
+# Using pnpm
+pnpm install -g quickcmd
+
+# Using bun
+bun install -g quickcmd
 ```
 
-## Usage
+## Initial Setup
 
-### Setup
-
-After installation, use `-d` to create the necessary directory for storing your commands. This step only needs to be done once, after the initial installation.
+After installation, run the `init` command to create the necessary directory and files for storing your commands. This only needs to be done once.
 
 ```bash
-qk -d
+qk init
 ```
 
-### Saving a Command
+## Commands
 
-To save a command, use the `-t` or `--title` option with `-c` or `--command`. Once entered, the command will be saved successfully.
+`quickcmd` uses an intuitive subcommand structure. Here is a complete list of available commands:
+
+| Command           | Alias | Description                                                 |
+| ----------------- | ----- | ----------------------------------------------------------- |
+| `qk init`         |       | Initializes the storage directory.                          |
+| `qk list`         | `ls`  | Lists all saved command groups by title.                    |
+| `qk add`          |       | Adds a new command to a specified group.                    |
+| `qk get <title>`  |       | Displays all commands within a specific group.              |
+| `qk run <title>`  |       | Interactively select and execute a command from a group.    |
+| `qk edit <title>` |       | Edits an existing command in a group.                       |
+| `qk remove <title>` | `rm`  | Interactively removes commands from a group.                |
+| `qk search <query>` |       | Searches for commands by title or content.                  |
+| `qk import <path>`  |       | Imports commands from a JSON file and merges them.          |
+| `qk export <path>`  |       | Exports all saved commands to a JSON file.                  |
+| `qk path`         |       | Displays the path to the storage file.                      |
+
+## Usage Examples
+
+### Adding a Command
+
+Save a new command under a group title. If the group doesn't exist, it will be created.
 
 ```bash
-❯ qk -t <title> -c <command>
-
-ex:-
-qk -t "docker" -c "docker ps"
+❯ qk add -t "docker" -c "docker-compose up -d"
+✔ Command saved successfully.
 ```
 
-### Retrieving Commands
+### Listing all Command Groups
 
-To retrieve commands, use the `-g` or `--get` option
+See all the groups you have saved.
 
 ```bash
-qk -g <title>
-
-ex:-
-qk -g docker
+❯ qk list
+Available command titles:
+- git
+- docker
+- npm
 ```
 
-### Updating a Command
+### Running a Command
 
-To update a command, use the `-e` or `--edit` option
-
-```bash
-qk -e <title>
-
-ex:-
-qk -e docker
-
-```
-### Removing a Command
-
-To remove a command, use the `-r` or `--remove` option
+Select a group title to see its commands, then choose one to execute immediately.
 
 ```bash
-qk -r <title>
-
-ex:-
-qk -r docker
+❯ qk run git
+✔ Select a command to run › - Use arrow-keys. Return to submit.
+│   git status
+│   git push
+└   git pull --rebase
 ```
 
-### Execute a Command
-You can directly execute command for an particular "title" you saved
-> Note: This is under testing, might not work as expected
+### Searching for a Command
+
+Find a command when you can't remember the group.
 
 ```bash
-qk -x <title>
+❯ qk search "commit"
+✔ Found 2 matching commands for "commit":
 
-ex:-
+git
+- git commit -m "feat: initial commit"
 
-❯ qk -x npm
-√ command · npm -v
-10.5.0
-```
-### Summary
-
-```bash
-Usage: qk [options]
-
-Options:
-  --version          output the version number
-  -c, --cmd      Save a command
-  -t, --title        Title of the command
-  -g, --get          Get a command
-  -e, --edit         Edit a command
-  -r, --remove       Remove a command
-  -d, --dir          Create a directory for storing commands
-  -x, --execute      Execute a command
-  -h, --help         display help for command
+github
+- gh release create v1.0.0
 ```
 
-### Data Storage
+### Import & Export
 
-Your commands are stored in a JSON file located at `%LOCALAPPDATA%/qk/data.json` (Windows), Here's an example of how the data is structured:
+Backup your commands or share them with your team.
 
 ```bash
+# Export to a file
+qk export ./my_commands.json
+
+# Import from a file
+qk import ./my_commands.json
+```
+
+## Data Storage
+
+Your commands are stored in a simple JSON file located in your user home directory. To find the exact location, run:
+
+```bash
+qk path
+```
+
+The data structure looks like this:
+
+```json
 [
-    {
-        "title": "prisma",
-        "commands": [
-            "npx prisma init"
-        ]
-    }
+  {
+    "title": "git",
+    "commands": ["git status", "git push"]
+  }
 ]
 ```
 
-### Contributing
+## Contributing
 
 Contributions are welcome! If you find any issues or have ideas for improvements, please open an issue or submit a pull request on the GitHub repository.
+
+For more detailed information on how to contribute, please see our [Contributing Guide](./CONTRIBUTING.md).
